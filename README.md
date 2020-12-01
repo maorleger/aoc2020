@@ -17,7 +17,7 @@ git clone https://github.com/maorleger/aoc2020
 ```
 
 ```
-cd aoc2019
+cd aoc2020
 ```
 
 Using NPM:
