@@ -1,35 +1,40 @@
-import { test, readInput } from "../utils/index"
+import { test, readInput } from "../utils/index";
 
-const prepareInput = (rawInput: string) : Array<{ [key: string] : string }> => {
-  return rawInput.split("\n").map(row => {
-    const { groups } = /(?<min>\d+)-(?<max>\d+) (?<char>.): (?<password>.*)/.exec(row)
-    return groups
-  })
-}
+const prepareInput = (rawInput: string): Array<{ [key: string]: string }> => {
+  return rawInput
+    .split("\n")
+    .map(
+      (row) =>
+        /(?<min>\d+)-(?<max>\d+) (?<char>.): (?<password>.*)/.exec(row).groups
+    );
+};
 
-const input = prepareInput(readInput())
+const input = prepareInput(readInput());
 
-const goA = (input: Array<{ [key: string] : string }>) : number => 
+const goA = (input: Array<{ [key: string]: string }>): number =>
   input.reduce((acc: number, { min, max, char, password }) => {
-    let count = password.split("").filter(c => c === char).length
+    let count = password.split("").filter((c) => c === char).length;
 
     if (count >= parseInt(min) && count <= parseInt(max)) {
-      return acc + 1
+      return acc + 1;
     }
-    return acc
-  }, 0)
+    return acc;
+  }, 0);
 
-const goB = (input: Array<{ [key: string] : string }>) => 
+const goB = (input: Array<{ [key: string]: string }>) =>
   input.reduce((acc: number, { min, max, char, password }) => {
-    let posA = parseInt(min) - 1
-    let posB = parseInt(max) - 1
+    let posA = parseInt(min) - 1;
+    let posB = parseInt(max) - 1;
 
-    if ((password[posA] === char && password[posB] !== char) || (password[posA] !== char && password[posB] === char)) {
-      return acc + 1
+    if (
+      (password[posA] === char && password[posB] !== char) ||
+      (password[posA] !== char && password[posB] === char)
+    ) {
+      return acc + 1;
     }
 
-    return acc
-  }, 0)
+    return acc;
+  }, 0);
 
 /* Results */
 
