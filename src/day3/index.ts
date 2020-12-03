@@ -6,18 +6,14 @@ const prepareInput = (rawInput: string): string[][] =>
 const input = prepareInput(readInput());
 
 const goA = (input: string[][], right: number, down: number) => {
-  let row = 0;
   let col = 0;
   let count = 0;
 
-  while (row < input.length) {
-    if (input[row][col] == "#") {
-      count++;
-    }
-
+  for (let row = 0; row < input.length; row += down) {
+    count += <any>(input[row][col] === "#")
     col = (col + right) % input[row].length;
-    row += down;
   }
+
   return count;
 };
 
