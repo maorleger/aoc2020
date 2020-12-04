@@ -9,7 +9,7 @@ const prepareInput = (rawInput: string) => {
 
 const input = prepareInput(readInput());
 
-const goA = (input: { [key: string]: string }[]) => {
+const goA = (input: Array<{ cid?: string }>) => {
   return input.filter(
     (record) =>
       Object.keys(record).length === 8 ||
@@ -17,7 +17,7 @@ const goA = (input: { [key: string]: string }[]) => {
   ).length;
 };
 
-const goB = (input: { [key: string]: string}[]) => {
+const goB = (input: Array<{}>) => {
   let rules = {
     byr: (byr: string) =>
       byr.length === 4 && parseInt(byr) >= 1920 && parseInt(byr) <= 2002,
@@ -45,7 +45,7 @@ const goB = (input: { [key: string]: string}[]) => {
     pid: (pid: string) => /^[0-9]{9}$/.test(pid),
   };
 
-  return input.filter((record: { [x: string]: any; cid?: any }) => {
+  return input.filter((record: { cid?: any }) => {
     let isValid =
       Object.keys(record).length === 8 ||
       (Object.keys(record).length === 7 && record.cid === undefined);
