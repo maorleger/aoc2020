@@ -4,36 +4,12 @@ const prepareInput = (rawInput: string) => rawInput.split("\r\n");
 
 const input = prepareInput(readInput());
 
-const calculateSeatID = (row) => {
-  let minRow = 0;
-  let maxRow = 127;
-  let minCol = 0;
-  let maxCol = 7;
-
-  for (let letter of row) {
-    let midRow = Math.floor(minRow + (maxRow - minRow) / 2);
-    let midCol = Math.floor(minCol + (maxCol - minCol) / 2);
-    switch (letter) {
-      case "F":
-        maxRow = midRow;
-        break;
-      case "B":
-        minRow = midRow;
-        break;
-      case "L":
-        maxCol = midCol;
-        break;
-      case "R":
-        minCol = midCol;
-        break;
-    }
-  }
-  return maxRow * 8 + maxCol;
-
-  // return parseInt(row.replace(/[BR]/g, "1").replace(/[FL]/g, "0"), 2);
+const calculateSeatID = (row: string) => {
+  // Byron's clever solution (previous commit has my binary search)
+  return parseInt(row.replace(/[BR]/g, "1").replace(/[FL]/g, "0"), 2);
 };
 
-const goA = (input) => {
+const goA = (input: string[]) => {
   let maxSeat = 0;
 
   for (let row of input) {
@@ -43,7 +19,7 @@ const goA = (input) => {
   return maxSeat;
 };
 
-const goB = (input) => {
+const goB = (input: string[]) => {
   let allSeats = input.map(calculateSeatID);
   let minSeat = Math.min(...allSeats);
   let maxSeat = Math.max(...allSeats);
