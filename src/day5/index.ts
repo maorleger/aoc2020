@@ -12,21 +12,27 @@ const calculateSeatID = (row: string) => {
 const goA = (input: string[]) => {
   let maxSeat = 0;
 
-  for (let row of input) {
-    let seatID = calculateSeatID(row);
+  for (let seat of input) {
+    let seatID = calculateSeatID(seat);
     maxSeat = Math.max(maxSeat, seatID);
   }
   return maxSeat;
 };
 
 const goB = (input: string[]) => {
-  let allSeats = input.map(calculateSeatID);
-  let minSeat = Math.min(...allSeats);
-  let maxSeat = Math.max(...allSeats);
-  let seriesSum = ((maxSeat - minSeat + 1) * (maxSeat + minSeat)) / 2;
-  let allSeatSum = allSeats.reduce((acc, seatID) => acc + seatID);
+  let minSeatID: number;
+  let maxSeatID: number;
+  let sumSeatIDs = 0;
 
-  return seriesSum - allSeatSum;
+  for (let seat of input) {
+    let seatID = calculateSeatID(seat);
+    minSeatID = Math.min(minSeatID || seatID, seatID);
+    maxSeatID = Math.max(maxSeatID || seatID, seatID);
+    sumSeatIDs += seatID;
+  }
+  let seriesSum = ((maxSeatID - minSeatID + 1) * (maxSeatID + minSeatID)) / 2;
+
+  return seriesSum - sumSeatIDs;
 };
 
 /* Results */
