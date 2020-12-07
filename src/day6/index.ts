@@ -26,7 +26,6 @@ const goA = (input) => {
 
 const goB = (input) => {
   let sum = 0;
-  console.log(input);
 
   for (let group of input) {
     let groupSum = 0;
