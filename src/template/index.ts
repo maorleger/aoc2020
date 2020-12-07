@@ -1,4 +1,5 @@
 import { test, readInput } from "../utils/index"
+import { EOL } from "os"
 
 const prepareInput = (rawInput: string) => rawInput
 
