@@ -1,17 +1,18 @@
-import { test, readInput } from "../utils/index"
-import { EOL } from "os"
+import { test, readInput } from "../utils/index";
+import { EOL } from "os";
+import * as _ from "lodash";
 
-const prepareInput = (rawInput: string) => rawInput
+const prepareInput = (rawInput: string) => rawInput;
 
-const input = prepareInput(readInput())
+const input = prepareInput(readInput());
 
 const goA = (input) => {
-  return
-}
+  return;
+};
 
 const goB = (input) => {
-  return
-}
+  return;
+};
 
 /* Tests */
 
@@ -19,10 +20,10 @@ const goB = (input) => {
 
 /* Results */
 
-console.time("Time")
-const resultA = goA(input)
-const resultB = goB(input)
-console.timeEnd("Time")
+console.time("Time");
+const resultA = goA(input);
+const resultB = goB(input);
+console.timeEnd("Time");
 
-console.log("Solution to part 1:", resultA)
-console.log("Solution to part 2:", resultB)
+console.log("Solution to part 1:", resultA);
+console.log("Solution to part 2:", resultB);
