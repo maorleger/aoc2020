@@ -34,13 +34,13 @@ const goA = (input: number[]) => {
   return frequencies[0] * frequencies[2];
 };
 
-const goB = (input) => {
-  let endVoltage = (_.max(input) as number) + 3;
+const goB = (input: number[]) => {
   let adapters: number[] = input.sort((a, b) => a - b);
+  let endVoltage = adapters[adapters.length - 1] + 3;
   adapters.unshift(0);
   adapters.push(endVoltage);
 
-  let step = (voltage, mem): number => {
+  let step = (voltage: number, mem: {}): number => {
     if (voltage === 0) {
       return 1;
     }
