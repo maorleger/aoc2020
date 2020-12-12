@@ -1,6 +1,15 @@
-import { test, readInput } from "../utils/index";
+import { readInput } from "../utils/index";
 import { EOL } from "os";
-import * as _ from "lodash";
+
+type Point = {
+  x: number;
+  y: number;
+};
+
+type Direction = {
+  direction: "N" | "E" | "S" | "W" | "L" | "R" | "F";
+  value: number;
+};
 
 const prepareInput = (rawInput: string) =>
   rawInput.split(EOL).map((row) => {
@@ -10,17 +19,17 @@ const prepareInput = (rawInput: string) =>
     return {
       direction,
       value: parseInt(value),
-    };
+    } as Direction;
   });
 
 const input = prepareInput(readInput());
 
-const goA = (input) => {
-  let ship = {
+const goA = (input: Direction[]) => {
+  let ship: Point = {
     x: 0,
     y: 0,
-    direction: 90,
   };
+  let angle = 90;
 
   input.forEach(({ direction, value }) => {
     switch (direction) {
@@ -37,45 +46,43 @@ const goA = (input) => {
         ship.x -= value;
         break;
       case "L":
-        ship.direction -= value;
+        angle -= value;
         break;
       case "R":
-        ship.direction += value;
+        angle += value;
         break;
       case "F":
-        let angle = (ship.direction / 180) * Math.PI;
+        let radians = (angle / 180) * Math.PI;
 
-        ship.x += Math.sin(angle) * value;
-        ship.y += Math.cos(angle) * value;
+        ship.x += Math.sin(radians) * value;
+        ship.y += Math.cos(radians) * value;
         break;
     }
   });
   return Math.abs(ship.x) + Math.abs(ship.y);
 };
 
-const goB = (input) => {
-  let ship = {
+const goB = (input: Direction[]) => {
+  let ship: Point = {
     x: 0,
     y: 0,
   };
 
-  let waypoint = {
+  let waypoint: Point = {
     x: 10,
     y: 1,
   };
 
-  function rotate(cx, cy, x, y, angle): { x: number; y: number } {
-    var radians = (Math.PI / 180) * angle,
-      cos = Math.cos(radians),
-      sin = Math.sin(radians),
-      nx = cos * (x - cx) + sin * (y - cy) + cx,
-      ny = cos * (y - cy) - sin * (x - cx) + cy;
+  const rotate = (angle: number): Point => {
+    let radians = (Math.PI / 180) * angle;
+    let cos = Math.cos(radians);
+    let sin = Math.sin(radians);
+    let nx = cos * (waypoint.x - ship.x) + sin * (waypoint.y - ship.y) + ship.x;
+    let ny = cos * (waypoint.y - ship.y) - sin * (waypoint.x - ship.x) + ship.y;
     return { x: nx, y: ny };
-  }
+  };
 
   input.forEach(({ direction, value }) => {
-    // console.log(ship, waypoint);
-    // console.log(direction, value);
     switch (direction) {
       case "N":
         waypoint.y += value;
@@ -90,36 +97,26 @@ const goB = (input) => {
         waypoint.x -= value;
         break;
       case "L":
-        waypoint = rotate(ship.x, ship.y, waypoint.x, waypoint.y, -value);
+        waypoint = rotate(-value);
         break;
       case "R":
-        waypoint = rotate(ship.x, ship.y, waypoint.x, waypoint.y, value);
+        waypoint = rotate(value);
         break;
       case "F":
         let xDiff =
           waypoint.x > ship.x ? waypoint.x - ship.x : -(ship.x - waypoint.x);
         let yDiff =
           waypoint.y > ship.y ? waypoint.y - ship.y : -(ship.y - waypoint.y);
-        // console.log(xDiff, yDiff);
-        for (let i = 0; i < value; i++) {
-          ship.x += xDiff;
-          ship.y += yDiff;
-        }
-        waypoint.x = ship.x + xDiff
-        waypoint.y = ship.y + yDiff
+        ship.x = ship.x + xDiff * value;
+        ship.y = ship.y + yDiff * value;
+        waypoint.x = ship.x + xDiff;
+        waypoint.y = ship.y + yDiff;
         break;
     }
-    // console.log(ship, waypoint);
-    // console.log("----------------");
   });
+
   return Math.abs(ship.x) + Math.abs(ship.y);
 };
-
-/* Tests */
-
-// test()
-
-/* Results */
 
 console.time("Time");
 const resultA = goA(input);
