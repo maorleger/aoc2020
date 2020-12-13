@@ -56,12 +56,6 @@ const goB = ({ schedules }) => {
   return time;
 };
 
-/* Tests */
-
-// test()
-
-/* Results */
-
 console.time("Time");
 const resultA = goA(input);
 const resultB = goB(input);
