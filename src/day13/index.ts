@@ -55,7 +55,6 @@ const crt = (congruences) => {
   return sum % product;
 };
 
-// Not my solution
 const goB = ({ schedules }) => {
   let validSchedules = schedules
     .map((schedule: number, offset: number) => ({ schedule, offset }))
@@ -80,7 +79,6 @@ const goB = ({ schedules }) => {
   ]);
 
   const result = crt(congruences);
-  // return result;
   return time;
 };
 
