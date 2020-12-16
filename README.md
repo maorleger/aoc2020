@@ -1,12 +1,6 @@
 # Advent of Code 2020
 
-## Intro
-
-This repo contains zero-setup environment for [Advent of Code](https://adventofcode.com/2020) challenges, with:
-
-- automatic creation of a challenge template,
-- automatic execution of a challenge code (with reloads),
-- quick utils for testing and reading input from a file.
+My solutions for Advent of Code, using [this](https://github.com/caderek/aoc-starter-ts) excellent template!
 
 ## Installation
 
