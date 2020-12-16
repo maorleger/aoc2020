@@ -46,6 +46,8 @@ const goB = (input) => {
       return ranges.some(([min, max]) => n >= min && n <= max);
     });
   });
+
+  // Step 1: find all possible indexes that are valid for a field
   let discoveredMappings = {};
   for (let definition in input.definitions) {
     discoveredMappings[definition] = [];
@@ -66,7 +68,9 @@ const goB = (input) => {
     }
   }
 
-  console.log(discoveredMappings);
+  // Step 2: find any fields that have only one possibility and remove that
+  // index from all other fields' possibilities. Repeat until there are no
+  // ambiguities
   while (Object.values(discoveredMappings).some((f) => (f as any).length > 1)) {
     for (let field in discoveredMappings) {
       if (discoveredMappings[field].length === 1) {
@@ -85,8 +89,9 @@ const goB = (input) => {
       }
     }
   }
+
+  // Step 3: profit!
   let total = 1;
-  console.log(discoveredMappings);
   for (let field in discoveredMappings) {
     if (field.startsWith("departure")) {
       total *= input.yourTicket[discoveredMappings[field][0]];
