@@ -34,27 +34,6 @@ const goA = ({ targetTime, schedules }) => {
   return earliestTimes[0].id * earliestTimes[0].wait;
 };
 
-const modularInverse = (a, mod) => {
-  const b = a % mod;
-  for (let i = 1; i < mod; i++) {
-    if ((b * i) % mod === 1) {
-      return i;
-    }
-  }
-  return 1;
-};
-const crt = (congruences) => {
-  const product = congruences.reduce((acc, val) => acc * val[0], 1);
-
-  let sum = 0;
-  for (const [ni, ai] of congruences) {
-    const div = Math.floor(product / ni);
-    sum += ai * modularInverse(div, ni) * div;
-  }
-
-  return sum % product;
-};
-
 const goB = ({ schedules }) => {
   let validSchedules = schedules
     .map((schedule: number, offset: number) => ({ schedule, offset }))
@@ -73,12 +52,6 @@ const goB = ({ schedules }) => {
     }
   }
 
-  const congruences = validSchedules.map(({ schedule, offset }) => [
-    schedule,
-    schedule - offset,
-  ]);
-
-  const result = crt(congruences);
   return time;
 };
 
