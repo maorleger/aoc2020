@@ -6,7 +6,6 @@ import { values } from "lodash";
 const prepareInput = (rawInput: string) => {
   let rows = rawInput.split(EOL);
   let groups = [];
-  let currentMask = "";
   rows.forEach((row) => {
     let data = row.split(" = ");
     if (data[0] === "mask") {
@@ -40,7 +39,6 @@ const goA = (input) => {
       return bitmask[i];
     });
   };
-  console.log(input);
   let memory = _.fill(new Array(36), 0);
   let currentMask = "";
   input.forEach((row) => {
@@ -55,29 +53,7 @@ const goA = (input) => {
 };
 
 const goB = (input) => {
-  const applyBitmask = (value, bitmask) => {
-    return value.map((v, i) => {
-      if (bitmask[i] === "X" || bitmask[i] === "1") {
-        return bitmask[i];
-      }
-      return v;
-    });
-  };
-  let memory = _.fill(new Array(36), _.fill(new Array(36), "0"));
-  console.log(memory);
-
-  let currentMask = "";
-  input.forEach((row) => {
-    if (row.kind === "mask") {
-      currentMask = row.value;
-    } else {
-      let value = applyBitmask(
-        row.addr.toString(2).padStart(36, "0").split(""),
-        currentMask
-      );
-      console.log(value);
-    }
-  });
+  // skipped
 };
 
 /* Tests */

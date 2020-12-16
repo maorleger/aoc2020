@@ -6,7 +6,7 @@ const prepareInput = (rawInput: string) => rawInput.split(",");
 
 const input = prepareInput(readInput());
 
-const compute = (rounds, input) => {
+const compute = (rounds: number, input: string[]) => {
   const numbers = {};
   let turn = 1;
   let lastNumber = null;
@@ -21,30 +21,26 @@ const compute = (rounds, input) => {
     if (turn % 1000000 === 0) {
       console.log(turn);
     }
-    let number;
+    let number: number;
     if (numbers[lastNumber].length === 1) {
       number = 0;
     } else {
-      // console.log(`${lastNumber} was spoken on turn ?`);
       let [x1, x2] = numbers[lastNumber].slice(-2);
       number = x2 - x1;
     }
 
-    if (!numbers[number]) {
-      numbers[number] = [];
-    }
-
-    numbers[number].push(turn);
+    // we only need the last 2 turns
+    numbers[number] = [...(numbers[number] || []), turn].slice(-2);
     lastNumber = number;
   }
   return lastNumber;
 };
 
-const goA = (input) => {
+const goA = (input: string[]) => {
   return compute(2020, input);
 };
 
-const goB = (input) => {
+const goB = (input: string[]) => {
   return compute(30000000, input);
 };
 

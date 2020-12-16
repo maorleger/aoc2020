@@ -4,14 +4,15 @@ import * as _ from "lodash";
 
 const prepareInput = (rawInput: string) => {
   let [d, y, n] = rawInput.split(`${EOL}${EOL}`);
-  let definitions = {};
+  // let definitions = {};
 
-  d.split(EOL).forEach((d) => {
-    let [name, values] = d.split(": ");
-    definitions[name] = values
+  let definitions = d.split(EOL).reduce((acc, def) => {
+    let [name, values] = def.split(": ");
+    acc[name] = values
       .split(" or ")
       .map((range) => range.split("-").map((i) => parseInt(i)));
-  });
+    return acc;
+  }, {});
 
   let yourTicket = y
     .split(EOL)[1]
@@ -111,5 +112,5 @@ const resultA = goA(input);
 const resultB = goB(input);
 console.timeEnd("Time");
 
-console.log("Solution to part 1:", resultA);
-console.log("Solution to part 2:", resultB);
+console.log("Solution to part 1:", resultA, 23054);
+console.log("Solution to part 2:", resultB, 51240700105297);
