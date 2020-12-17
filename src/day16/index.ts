@@ -8,9 +8,7 @@ const prepareInput = (rawInput: string) => {
 
   let definitions = d.split(EOL).reduce((acc, def) => {
     let [name, values] = def.split(": ");
-    acc[name] = values
-      .split(" or ")
-      .map((range) => range.split("-").map((i) => parseInt(i)));
+    acc[name] = values.split(" or ").map((range) => range.split("-").map((i) => parseInt(i)));
     return acc;
   }, {});
 
@@ -59,9 +57,7 @@ const goB = (input) => {
       let testNumbers = [input.yourTicket[i], ...valid.map((row) => row[i])];
       if (
         testNumbers.every((testNumber) =>
-          input.definitions[definition].some(
-            ([min, max]) => testNumber >= min && testNumber <= max
-          )
+          input.definitions[definition].some(([min, max]) => testNumber >= min && testNumber <= max)
         )
       ) {
         discoveredMappings[definition].push(i);
@@ -82,9 +78,9 @@ const goB = (input) => {
           }
           if (discoveredMappings[otherField].includes(stableMapping)) {
             // remove it from the list and set changed to true
-            discoveredMappings[otherField] = discoveredMappings[
-              otherField
-            ].filter((i) => i !== stableMapping);
+            discoveredMappings[otherField] = discoveredMappings[otherField].filter(
+              (i) => i !== stableMapping
+            );
           }
         }
       }

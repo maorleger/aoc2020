@@ -10,7 +10,7 @@ const goA = (input: string[][], right: number, down: number) => {
   let count = 0;
 
   for (let row = 0; row < input.length; row += down) {
-    count += <any>(input[row][col] === "#")
+    count += <any>(input[row][col] === "#");
     col = (col + right) % input[row].length;
   }
 

@@ -4,9 +4,7 @@ import { EOL } from "os";
 const prepareInput = (rawInput: string) =>
   rawInput.split(EOL).reduce((acc, line) => {
     let [container, right] = line.split(" bags contain ");
-    let contents = (right as any).matchAll(
-      /(?<quantity>\d+) (?<type>.+?)(?= bag)/g
-    );
+    let contents = (right as any).matchAll(/(?<quantity>\d+) (?<type>.+?)(?= bag)/g);
     if (!acc[container]) {
       acc[container] = [];
     }
@@ -39,8 +37,7 @@ const goA = (input) => computeResultA(input, "shiny gold", new Set());
 const computeResultB = (mapping, bag) => {
   if (mapping[bag]) {
     return mapping[bag].reduce(
-      (acc, { type, quantity }) =>
-        acc + quantity * (1 + computeResultB(mapping, type)),
+      (acc, { type, quantity }) => acc + quantity * (1 + computeResultB(mapping, type)),
       0
     );
   } else {

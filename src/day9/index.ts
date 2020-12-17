@@ -1,8 +1,7 @@
 import { test, readInput } from "../utils/index";
 import { EOL } from "os";
 
-const prepareInput = (rawInput: string) =>
-  rawInput.split(EOL).map((row) => parseInt(row));
+const prepareInput = (rawInput: string) => rawInput.split(EOL).map((row) => parseInt(row));
 
 const input = prepareInput(readInput());
 

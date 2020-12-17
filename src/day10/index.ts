@@ -3,17 +3,12 @@ import { EOL } from "os";
 import * as _ from "lodash";
 import { exit } from "process";
 
-const prepareInput = (rawInput: string) =>
-  rawInput.split(EOL).map((row) => parseInt(row));
+const prepareInput = (rawInput: string) => rawInput.split(EOL).map((row) => parseInt(row));
 
 const input = prepareInput(readInput());
 
 const goA = (input: number[]) => {
-  let adapters = _.transform(
-    input,
-    (acc, curr: number) => (acc[curr] = true),
-    []
-  );
+  let adapters = _.transform(input, (acc, curr: number) => (acc[curr] = true), []);
   let currentOutlet = 0;
   let frequencies = [0, 0, 0];
 
@@ -49,10 +44,7 @@ const goB = (input: number[]) => {
     }
 
     if (!mem[voltage]) {
-      mem[voltage] =
-        step(voltage - 1, mem) +
-        step(voltage - 2, mem) +
-        step(voltage - 3, mem);
+      mem[voltage] = step(voltage - 1, mem) + step(voltage - 2, mem) + step(voltage - 3, mem);
     }
 
     return mem[voltage];

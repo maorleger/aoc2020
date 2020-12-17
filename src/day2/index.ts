@@ -3,10 +3,7 @@ import { test, readInput } from "../utils/index";
 const prepareInput = (rawInput: string): Array<Record> => {
   return rawInput
     .split("\n")
-    .map(
-      (row) =>
-        /(?<min>\d+)-(?<max>\d+) (?<char>.): (?<password>.*)/.exec(row).groups
-    );
+    .map((row) => /(?<min>\d+)-(?<max>\d+) (?<char>.): (?<password>.*)/.exec(row).groups);
 };
 
 interface Record {

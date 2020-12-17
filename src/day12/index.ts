@@ -13,9 +13,7 @@ type Direction = {
 
 const prepareInput = (rawInput: string) =>
   rawInput.split(EOL).map((row) => {
-    let { direction, value } = /(?<direction>[A-Z])(?<value>\d+)/.exec(
-      row
-    ).groups;
+    let { direction, value } = /(?<direction>[A-Z])(?<value>\d+)/.exec(row).groups;
     return {
       direction,
       value: parseInt(value),
@@ -103,10 +101,8 @@ const goB = (input: Direction[]) => {
         waypoint = rotate(value);
         break;
       case "F":
-        let xDiff =
-          waypoint.x > ship.x ? waypoint.x - ship.x : -(ship.x - waypoint.x);
-        let yDiff =
-          waypoint.y > ship.y ? waypoint.y - ship.y : -(ship.y - waypoint.y);
+        let xDiff = waypoint.x > ship.x ? waypoint.x - ship.x : -(ship.x - waypoint.x);
+        let yDiff = waypoint.y > ship.y ? waypoint.y - ship.y : -(ship.y - waypoint.y);
         ship.x = ship.x + xDiff * value;
         ship.y = ship.y + yDiff * value;
         waypoint.x = ship.x + xDiff;

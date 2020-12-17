@@ -3,8 +3,7 @@ import { EOL } from "os";
 import * as _ from "lodash";
 import { forEach } from "lodash";
 
-const prepareInput = (rawInput: string) =>
-  rawInput.split(EOL).map((row) => row.split(""));
+const prepareInput = (rawInput: string) => rawInput.split(EOL).map((row) => row.split(""));
 
 const input = prepareInput(readInput());
 

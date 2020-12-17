@@ -14,14 +14,8 @@ const prepareInput = (rawInput: string) => {
       let address = /^mem\[(?<addr>\d+)\] = (?<val>\d+)$/.exec(row);
       groups.push({
         kind: "instruction",
-        addr: parseInt(address.groups.addr)
-          .toString(2)
-          .padStart(36, "0")
-          .split(""),
-        value: parseInt(address.groups.val)
-          .toString(2)
-          .padStart(36, "0")
-          .split(""),
+        addr: parseInt(address.groups.addr).toString(2).padStart(36, "0").split(""),
+        value: parseInt(address.groups.val).toString(2).padStart(36, "0").split(""),
       });
     }
   });

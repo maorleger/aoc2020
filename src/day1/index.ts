@@ -1,7 +1,6 @@
 import { readInput } from "../utils/index";
 
-const prepareInput = (rawInput: string) =>
-  rawInput.split("\n").map((n) => parseInt(n));
+const prepareInput = (rawInput: string) => rawInput.split("\n").map((n) => parseInt(n));
 
 const input: Array<number> = prepareInput(readInput());
 

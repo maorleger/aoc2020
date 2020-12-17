@@ -19,12 +19,9 @@ const goA = (input: Array<{ cid?: string }>) => {
 
 const goB = (input: Array<{}>) => {
   let rules = {
-    byr: (byr: string) =>
-      byr.length === 4 && parseInt(byr) >= 1920 && parseInt(byr) <= 2002,
-    iyr: (iyr: string) =>
-      iyr.length === 4 && parseInt(iyr) >= 2010 && parseInt(iyr) <= 2020,
-    eyr: (eyr: string) =>
-      eyr.length === 4 && parseInt(eyr) >= 2020 && parseInt(eyr) <= 2030,
+    byr: (byr: string) => byr.length === 4 && parseInt(byr) >= 1920 && parseInt(byr) <= 2002,
+    iyr: (iyr: string) => iyr.length === 4 && parseInt(iyr) >= 2010 && parseInt(iyr) <= 2020,
+    eyr: (eyr: string) => eyr.length === 4 && parseInt(eyr) >= 2020 && parseInt(eyr) <= 2030,
     hgt: (hgt: string) => {
       let result = /^(?<num>\d+)(?<msr>[a-z]{2}$)/.exec(hgt);
       let isValid = false;
@@ -40,8 +37,7 @@ const goB = (input: Array<{}>) => {
       return isValid;
     },
     hcl: (hcl: string) => /^\#[a-f0-9]{6}$/.test(hcl),
-    ecl: (ecl: string) =>
-      ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].indexOf(ecl) > -1,
+    ecl: (ecl: string) => ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].indexOf(ecl) > -1,
     pid: (pid: string) => /^[0-9]{9}$/.test(pid),
   };
 

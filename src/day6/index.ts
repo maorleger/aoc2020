@@ -2,9 +2,7 @@ import { AsyncLocalStorage } from "async_hooks";
 import { test, readInput } from "../utils/index";
 
 const prepareInput = (rawInput: string) =>
-  rawInput
-    .split("\r\n\r\n")
-    .map((group) => group.split("\r\n").map((person) => person.split("")));
+  rawInput.split("\r\n\r\n").map((group) => group.split("\r\n").map((person) => person.split("")));
 
 const input = prepareInput(readInput());
 
