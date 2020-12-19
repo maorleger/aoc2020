@@ -5,7 +5,7 @@ const prepareInput = (rawInput: string) => rawInput.split("\r\n");
 const input = prepareInput(readInput());
 
 const calculateSeatID = (row: string) => {
-  // Byron's clever solution (previous commit has my binary search)
+  // Byron's solution (previous commit has my binary search)
   return parseInt(row.replace(/[BR]/g, "1").replace(/[FL]/g, "0"), 2);
 };
 

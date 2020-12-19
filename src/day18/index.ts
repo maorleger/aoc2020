@@ -4,11 +4,59 @@ import * as _ from "lodash";
 
 const prepareInput = (rawInput: string) => rawInput.split(EOL).map((row) => tokenize(row));
 
+class Expression {
+  private tokens: Token[];
+  constructor(private part2 = false) {
+    this.tokens = [];
+  }
+
+  preProcess(): void {
+    // hacky but it works. At this point there are no parens
+    // So I can preprocess the array by replacing all (lhs + rhs)
+    // with the result of adding them together.
+    let i = 0;
+    while (i < this.tokens.length) {
+      let currentToken = this.tokens[i];
+      if (currentToken.kind === "operator" && currentToken.value === "+") {
+        let [lhs, op, rhs] = this.tokens.splice(i - 1, 3);
+        if (lhs.kind !== "number" || op.kind !== "operator" || rhs.kind !== "number") {
+          throw new Error();
+        }
+        this.tokens.splice(i - 1, 0, { kind: "number", value: op.operator(lhs.value, rhs.value) });
+        i--;
+      }
+      i++;
+    }
+  }
+
+  evaluate(): Token {
+    if (this.part2) {
+      this.preProcess();
+    }
+    while (this.tokens.length >= 3) {
+      let lhs = this.tokens.shift();
+      let op = this.tokens.shift();
+      let rhs = this.tokens.shift();
+
+      if (lhs.kind !== "number" || op.kind !== "operator" || rhs.kind !== "number") {
+        throw new Error();
+      }
+      this.tokens.unshift({ kind: "number", value: op.operator(lhs.value, rhs.value) });
+    }
+    return { kind: "number", value: (this.tokens[0] as any).value };
+  }
+
+  push(token: Token) {
+    this.tokens.push(token);
+  }
+}
+
 type Token =
   | { kind: "number"; value: number }
   | { kind: "lparen" }
   | { kind: "rparen" }
   | { kind: "operator"; operator: (v1, v2) => number; value: string };
+
 const tokenize = (data: string) => {
   const tokens: Token[] = [];
 
@@ -59,62 +107,39 @@ const tokenize = (data: string) => {
 
 const input = prepareInput(readInput());
 
+const evaluate = (exp: Token[], part2: boolean = false) => {
+  let expressions = new Array<Expression>();
+  expressions.push(new Expression(part2));
+
+  let i = 0;
+  while (i < exp.length) {
+    switch (exp[i].kind) {
+      case "lparen":
+        expressions.push(new Expression(part2));
+        break;
+      case "rparen":
+        let val = expressions.pop().evaluate();
+        expressions[expressions.length - 1].push(val);
+        break;
+      default:
+        expressions[expressions.length - 1].push(exp[i]);
+        break;
+    }
+    i++;
+  }
+  let val = expressions[expressions.length - 1].evaluate();
+  if (val.kind !== "number") {
+    throw Error();
+  }
+  return val.value;
+};
+
 const goA = (input) => {
-  console.log(input);
-  const evaluate = (exp: Token[]) => {
-    let expressions: Token[] = [];
-
-    let i = 0;
-    while (i < exp.length) {
-      switch (exp[i].kind) {
-        case "lparen":
-          let numOpeners = 1;
-          i++;
-          let subExpr: Token[] = [];
-          while (numOpeners > 0) {
-            if (exp[i].kind === "rparen") {
-              numOpeners--;
-              if (numOpeners > 0) {
-                subExpr.push(exp[i]);
-              }
-            } else if (exp[i].kind === "lparen") {
-              numOpeners++;
-              subExpr.push(exp[i]);
-            } else {
-              subExpr.push(exp[i]);
-            }
-            i++;
-          }
-          console.log("subExp", subExpr, evaluate(subExpr));
-          console.log("xpressions", expressions);
-          expressions.unshift({ kind: "number", value: evaluate(subExpr) });
-          break;
-        default:
-          expressions.push(exp[i]);
-          break;
-      }
-      i++;
-    }
-
-    i = 0;
-    // we evaluated all the subexpr, so we can go left to right now...
-    while (expressions.length > 1) {
-      console.log("stack", expressions);
-      let lhs = expressions.shift();
-      let op = expressions.shift();
-      let rhs = expressions.shift();
-      if (lhs.kind !== "number" || op.kind !== "operator" || rhs.kind !== "number") {
-        throw new Error();
-      }
-      expressions.unshift({ kind: "number", value: op.operator(lhs.value, rhs.value) });
-    }
-    return expressions[0].kind === "number" && expressions[0].value;
-  };
   return input.reduce((acc, expr) => acc + evaluate(expr), 0);
 };
 
-const goB = (input) => {
-  return;
+const goB = (input: Token[][]) => {
+  return input.reduce((acc, expr) => acc + evaluate(expr, true), 0);
 };
 
 /* Tests */
@@ -128,5 +153,5 @@ const resultA = goA(input);
 const resultB = goB(input);
 console.timeEnd("Time");
 
-console.log("Solution to part 1:", resultA);
-console.log("Solution to part 2:", resultB);
+console.log("Solution to part 1:", resultA, 131076645626);
+console.log("Solution to part 2:", resultB, 109418509151782);
