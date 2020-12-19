@@ -3,62 +3,64 @@ import { EOL } from "os";
 import * as _ from "lodash";
 import { stat } from "fs";
 
-const prepareInput = (rawInput: string): {} => {
-  return Object.fromEntries(
-    rawInput.split(EOL).flatMap((row, i) => {
-      return row.split("").map((val, j) => [[i, j, 0].join(""), val]);
-    })
-  );
+const toKey = (x, y, z, val) => [x, y, z, val].join(":");
+const fromKey = (key) => {
+  let [x, y, z, val] = key.split(":");
+  return [parseInt(x), parseInt(y), parseInt(z), val];
+};
+
+const prepareInput = (rawInput: string): Set<string> => {
+  const coords = new Set<string>();
+
+  rawInput.split(EOL).forEach((row, i) => {
+    row.split("").forEach((val, j) => {
+      coords.add(toKey(i, j, 0, val));
+    });
+  });
+
+  return coords;
 };
 const input = prepareInput(readInput());
 
-const goA = (state: {}) => {
-  const fromKey = (key) => key.split(":").map((i) => parseInt(i));
-  const toKey = (...coords) => coords.join(":");
-  console.log(state);
-  for (let i = 0; i < 6; i++) {
-    console.log("round", i);
-    console.log(state);
-    let newState = JSON.parse(JSON.stringify(state));
-    for (let k in state) {
-      let [x, y, z] = fromKey(k);
-      let numAlive = 0;
-      for (let x1 = x - 1; x1 <= x + 1; x1++) {
-        for (let y1 = y - 1; y1 <= y + 1; y1++) {
-          for (let z1 = z - 1; z1 <= z + 1; z1++) {
-            if ([x, y, z] === [x1, y1, z1]) {
-              continue;
-            }
-            // add the neighbor if it doesnt exist
-            if (!state[toKey(x1, y1, z1)]) {
-              console.log("adding new state");
-              newState[toKey(x1, y1, z1)] = ".";
-            }
-            if (state[toKey(x1, y1, z1)] === "#") {
-              numAlive++;
-            }
+const goA = (coords: Set<string>) => {
+  let newCoords = new Set<string>();
+
+  coords.forEach((key) => {
+    let [x, y, z, val] = fromKey(key);
+    let numAlive = 0;
+    for (let x1 = x - 1; x1 <= x + 1; x1++) {
+      for (let y1 = y - 1; y1 <= y + 1; y1++) {
+        for (let z1 = z - 1; z1 <= z + 1; z1++) {
+          if (x === x1 && y === y1 && z === z1) {
+            continue;
+          }
+
+          if (coords.has(toKey(x1, y1, z1, "#"))) {
+            numAlive++;
+          } else if (!coords.has(toKey(x1, y1, z1, "."))) {
+            newCoords.add(toKey(x1, y1, z1, "."));
           }
         }
       }
-
-      if (state[toKey(x, y, z)] === "#" && numAlive !== 2 && numAlive !== 3) {
-        newState[toKey(x, y, z)] = ".";
-      }
-      if (state[toKey(x, y, z)] === "." && numAlive === 3) {
-        newState[toKey(x, y, z)] = "#";
-      }
     }
-    state = newState;
-  }
 
-  let result = 0;
-  console.log(state);
-  return Object.values(state).reduce((acc: number, v: string) => {
-    if (v === "#") {
-      return acc + 1;
+    if (val === "#") {
+      if (numAlive === 3 || numAlive === 2) {
+        newCoords.add(key);
+      } else {
+        newCoords.add(toKey(x, y, z, "."));
+      }
+    } else if (numAlive === 3) {
+      newCoords.add(toKey(x, y, z, "#"));
+    } else {
+      newCoords.add(toKey(x, y, z, "."));
     }
-    return acc;
-  }, 0);
+  });
+
+  coords = newCoords;
+  console.log(coords);
+
+  return coords.size;
 };
 
 const goB = (input) => {
