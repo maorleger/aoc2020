@@ -1,12 +1,12 @@
-import { test, readInput } from "../utils/index";
+import { readInput } from "../utils/index";
 import { EOL } from "os";
 import * as _ from "lodash";
-import { stat } from "fs";
+import { exit } from "process";
 
-const toKey = (x, y, z, val) => [x, y, z, val].join(":");
-const fromKey = (key) => {
-  let [x, y, z, val] = key.split(":");
-  return [parseInt(x), parseInt(y), parseInt(z), val];
+const toKey = (x: number, y: number, z: number, w: number = 0) => [x, y, z, w].join(":");
+const fromKey = (key: string) => {
+  let [x, y, z, w] = key.split(":");
+  return [parseInt(x), parseInt(y), parseInt(z), parseInt(w)];
 };
 
 const prepareInput = (rawInput: string): Set<string> => {
@@ -14,7 +14,9 @@ const prepareInput = (rawInput: string): Set<string> => {
 
   rawInput.split(EOL).forEach((row, i) => {
     row.split("").forEach((val, j) => {
-      coords.add(toKey(i, j, 0, val));
+      if (val === "#") {
+        coords.add(toKey(i, j, 0, 0));
+      }
     });
   });
 
@@ -23,48 +25,121 @@ const prepareInput = (rawInput: string): Set<string> => {
 const input = prepareInput(readInput());
 
 const goA = (coords: Set<string>) => {
-  let newCoords = new Set<string>();
+  const bounds = (coords: Set<string>): number[] => {
+    let coordObj = [...coords].map(fromKey);
+    return [
+      _.minBy(coordObj, (coord) => coord[0])[0] - 1,
+      _.minBy(coordObj, (coord) => coord[1])[1] - 1,
+      _.minBy(coordObj, (coord) => coord[2])[2] - 1,
+      _.maxBy(coordObj, (coord) => coord[0])[0] + 1,
+      _.maxBy(coordObj, (coord) => coord[1])[1] + 1,
+      _.maxBy(coordObj, (coord) => coord[2])[2] + 1,
+    ];
+  };
 
-  coords.forEach((key) => {
-    let [x, y, z, val] = fromKey(key);
+  const numLiveNeighbors = (x: number, y: number, z: number, coords: Set<string>) => {
     let numAlive = 0;
-    for (let x1 = x - 1; x1 <= x + 1; x1++) {
-      for (let y1 = y - 1; y1 <= y + 1; y1++) {
-        for (let z1 = z - 1; z1 <= z + 1; z1++) {
-          if (x === x1 && y === y1 && z === z1) {
+    for (let x1 = -1; x1 <= 1; x1++) {
+      for (let y1 = -1; y1 <= 1; y1++) {
+        for (let z1 = -1; z1 <= 1; z1++) {
+          if (x1 === 0 && y1 === 0 && z1 === 0) {
             continue;
           }
-
-          if (coords.has(toKey(x1, y1, z1, "#"))) {
+          if (coords.has(toKey(x + x1, y + y1, z + z1))) {
             numAlive++;
-          } else if (!coords.has(toKey(x1, y1, z1, "."))) {
-            newCoords.add(toKey(x1, y1, z1, "."));
           }
         }
       }
     }
 
-    if (val === "#") {
-      if (numAlive === 3 || numAlive === 2) {
-        newCoords.add(key);
-      } else {
-        newCoords.add(toKey(x, y, z, "."));
-      }
-    } else if (numAlive === 3) {
-      newCoords.add(toKey(x, y, z, "#"));
-    } else {
-      newCoords.add(toKey(x, y, z, "."));
-    }
-  });
+    return numAlive;
+  };
 
-  coords = newCoords;
-  console.log(coords);
+  const round = (coords: Set<string>): Set<string> => {
+    let newCoords = new Set<string>();
+    let [minX, minY, minZ, maxX, maxY, maxZ] = bounds(coords);
+
+    for (let x = minX; x <= maxX; x++) {
+      for (let y = minY; y <= maxY; y++) {
+        for (let z = minZ; z <= maxZ; z++) {
+          let numAlive = numLiveNeighbors(x, y, z, coords);
+          if (numAlive === 3 || (numAlive === 2 && coords.has(toKey(x, y, z)))) {
+            newCoords.add(toKey(x, y, z));
+          }
+        }
+      }
+    }
+
+    return newCoords;
+  };
+
+  for (let i = 0; i < 6; i++) {
+    coords = round(coords);
+  }
 
   return coords.size;
 };
 
-const goB = (input) => {
-  return;
+const goB = (coords: Set<string>) => {
+  const bounds = (coords: Set<string>): number[] => {
+    let coordObj = [...coords].map(fromKey);
+    return [
+      _.minBy(coordObj, (coord) => coord[0])[0] - 1,
+      _.minBy(coordObj, (coord) => coord[1])[1] - 1,
+      _.minBy(coordObj, (coord) => coord[2])[2] - 1,
+      _.minBy(coordObj, (coord) => coord[3])[3] - 1,
+      _.maxBy(coordObj, (coord) => coord[0])[0] + 1,
+      _.maxBy(coordObj, (coord) => coord[1])[1] + 1,
+      _.maxBy(coordObj, (coord) => coord[2])[2] + 1,
+      _.maxBy(coordObj, (coord) => coord[3])[3] + 1,
+    ];
+  };
+
+  const numLiveNeighbors = (x: number, y: number, z: number, w: number, coords: Set<string>) => {
+    let numAlive = 0;
+    for (let x1 = -1; x1 <= 1; x1++) {
+      for (let y1 = -1; y1 <= 1; y1++) {
+        for (let z1 = -1; z1 <= 1; z1++) {
+          for (let w1 = -1; w1 <= 1; w1++) {
+            if (x1 === 0 && y1 === 0 && z1 === 0 && w1 === 0) {
+              continue;
+            }
+            if (coords.has(toKey(x + x1, y + y1, z + z1, w + w1))) {
+              numAlive++;
+            }
+          }
+        }
+      }
+    }
+
+    return numAlive;
+  };
+
+  const round = (coords: Set<string>): Set<string> => {
+    let newCoords = new Set<string>();
+    let [minX, minY, minZ, minW, maxX, maxY, maxZ, maxW] = bounds(coords);
+
+    for (let x = minX; x <= maxX; x++) {
+      for (let y = minY; y <= maxY; y++) {
+        for (let z = minZ; z <= maxZ; z++) {
+          for (let w = minW; w <= maxW; w++) {
+            let numAlive = numLiveNeighbors(x, y, z, w, coords);
+            if (numAlive === 3 || (numAlive === 2 && coords.has(toKey(x, y, z, w)))) {
+              newCoords.add(toKey(x, y, z, w));
+            }
+          }
+        }
+      }
+    }
+
+    return newCoords;
+  };
+
+  for (let i = 0; i < 6; i++) {
+    coords = round(coords);
+  }
+
+  return coords.size;
 };
 
 /* Tests */
