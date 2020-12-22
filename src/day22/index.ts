@@ -1,7 +1,6 @@
-import { test, readInput } from "../utils/index";
+import { readInput } from "../utils/index";
 import { EOL } from "os";
 import * as _ from "lodash";
-import { round } from "lodash";
 
 const prepareInput = (rawInput: string) =>
   rawInput.split(`${EOL}${EOL}`).reduce((acc, group) => {
@@ -9,8 +8,6 @@ const prepareInput = (rawInput: string) =>
     acc[player.slice(7, 8)] = cards.map((card) => parseInt(card));
     return acc;
   }, {});
-
-const input = prepareInput(readInput());
 
 const goA = (input: { [k: string]: number[] }) => {
   while (Object.values(input).every((c) => c.length > 0)) {
