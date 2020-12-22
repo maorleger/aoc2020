@@ -7,6 +7,7 @@
     "start": "node ./scripts/start.js"
   },
   "devDependencies": {
+    "@types/nearley": "^2.11.1",
     "@types/node": "^12.19.9",
     "core-js": "^3.8.1",
     "nodemon": "^2.0.1",
@@ -19,6 +20,7 @@
     "@types/lodash": "^4.14.165",
     "get-caller-file": "^2.0.5",
     "kleur": "^3.0.3",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "nearley": "^2.20.1"
   }
 }
