@@ -2,27 +2,12 @@ import { readInput } from "../utils/index";
 import { EOL } from "os";
 import * as _ from "lodash";
 
-const prepareInput = (rawInput: string) =>
-  rawInput.split(`${EOL}${EOL}`).reduce((acc, group) => {
-    let [player, ...cards] = group.split(EOL);
-    acc[player.slice(7, 8)] = cards.map((card) => parseInt(card));
-    return acc;
-  }, {});
+const prepareInput = (rawInput: string): [number[], number[]] => {
+  let [[_id, ...p1], [_id2, ...p2]] = rawInput
+    .split(`${EOL}${EOL}`)
+    .map((group) => group.split(EOL));
 
-const goA = (input: { [k: string]: number[] }) => {
-  while (Object.values(input).every((c) => c.length > 0)) {
-    let top1 = input["1"].shift();
-    let top2 = input["2"].shift();
-    if (top1 > top2) {
-      input["1"].push(top1, top2);
-    } else {
-      input["2"].push(top2, top1);
-    }
-  }
-
-  // compute the score
-  let deck = input["1"].length > 0 ? input["1"] : input["2"];
-  return calculateScore(deck);
+  return [p1.map((v) => parseInt(v)), p2.map((v) => parseInt(v))];
 };
 
 const calculateScore = (deck: number[]) => {
@@ -32,47 +17,64 @@ const calculateScore = (deck: number[]) => {
   }, 0);
 };
 
-const goB = (decks: { [k: string]: number[] }) => {
-  const seenDecks = new Set<string>();
-  while (Object.values(decks).every((c) => c.length > 0)) {
-    if (seenDecks.has([...decks["1"], ...decks["2"]].join(""))) {
-      return { winner: "1", score: calculateScore(decks["1"]) };
-    }
-    seenDecks.add([...decks["1"], ...decks["2"]].join(""));
-
-    let top1 = decks["1"].shift();
-    let top2 = decks["2"].shift();
-
-    let winner;
-    if (decks["1"].length >= top1 && decks["2"].length >= top2) {
-      const subGameResult = goB(_.cloneDeep(decks));
-      winner = subGameResult.winner;
-    } else if (top1 > top2) {
-      winner = "1";
+const goA = (p1: number[], p2: number[]) => {
+  while (p1.length > 0 && p2.length > 0) {
+    let top1 = p1.shift();
+    let top2 = p2.shift();
+    if (top1 > top2) {
+      p1.push(top1, top2);
     } else {
-      winner = "2";
+      p2.push(top2, top1);
     }
-
-    const order = winner === "1" ? [top1, top2] : [top2, top1];
-    decks[winner].push(...order);
   }
 
   // compute the score
-  let winner = decks["1"].length > 0 ? "1" : "2";
-  let deck = decks[winner];
-  return { winner, score: calculateScore(deck) };
+  let deck = p1.length > 0 ? p1 : p2;
+  return calculateScore(deck);
 };
 
-/* Tests */
+const goB = (p1: number[], p2: number[]) => {
+  const seenp1 = new Set<string>();
+  const seenp2 = new Set<string>();
 
-// test()
+  while (p1.length > 0 && p2.length > 0) {
+    if (seenp1.has(p1.join("")) && seenp2.has(p2.join(""))) {
+      return { winner: 1, score: calculateScore(p1) };
+    }
+    seenp1.add(p1.join(""));
+    seenp2.add(p2.join(""));
 
-/* Results */
+    let top1 = p1.shift();
+    let top2 = p2.shift();
+
+    let winner: number;
+    if (p1.length >= top1 && p2.length >= top2) {
+      const subGameResult = goB(p1.slice(0, top1), p2.slice(0, top2));
+      winner = subGameResult.winner;
+    } else if (top1 > top2) {
+      winner = 1;
+    } else {
+      winner = 2;
+    }
+
+    if (winner === 1) {
+      p1.push(top1, top2);
+    } else {
+      p2.push(top2, top1);
+    }
+  }
+
+  if (p1.length > 0) {
+    return { winner: 1, score: calculateScore(p1) };
+  } else {
+    return { winner: 2, score: calculateScore(p2) };
+  }
+};
 
 console.time("Time");
-const resultA = goA(prepareInput(readInput()));
-const resultB = goB(prepareInput(readInput()));
+const resultA = goA(...prepareInput(readInput()));
+const resultB = goB(...prepareInput(readInput()));
 console.timeEnd("Time");
 
 console.log("Solution to part 1:", resultA, 32102);
-console.log("Solution to part 2:", resultB);
+console.log("Solution to part 2:", resultB.score, 34173);
