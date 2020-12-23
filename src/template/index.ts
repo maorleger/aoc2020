@@ -4,7 +4,7 @@ import * as _ from "lodash";
 
 const prepareInput = (rawInput: string) => rawInput;
 
-const input = prepareInput(readInput());
+const rawInput = readInput();
 
 const goA = (input) => {
   return;
@@ -21,8 +21,8 @@ const goB = (input) => {
 /* Results */
 
 console.time("Time");
-const resultA = goA(input);
-const resultB = goB(input);
+const resultA = goA(prepareInput(rawInput));
+const resultB = goB(prepareInput(rawInput));
 console.timeEnd("Time");
 
 console.log("Solution to part 1:", resultA);
