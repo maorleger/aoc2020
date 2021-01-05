@@ -22,10 +22,11 @@ class Expression {
         if (lhs.kind !== "number" || op.kind !== "operator" || rhs.kind !== "number") {
           throw new Error();
         }
-        this.tokens.splice(i - 1, 0, { kind: "number", value: op.operator(lhs.value, rhs.value) });
-        i--;
+        const opResult: Token = { kind: "number", value: op.operator(lhs.value, rhs.value) };
+        this.tokens.splice(i - 1, 0, opResult);
+      } else {
+        i++;
       }
-      i++;
     }
   }
 
